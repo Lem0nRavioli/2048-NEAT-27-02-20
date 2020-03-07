@@ -275,7 +275,7 @@ def eval_genomes(genomes, config):
 
     run = True
     while run:
-        #clock.tick(5)
+        #clock.tick(10)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -323,7 +323,12 @@ def eval_genomes(genomes, config):
                 # could also change the fitness here
                 rem.append(board)
             else:
+                addition = 0
+                for i in range(len(list_board)):
+                    addition += new_list_board[i] - list_board[i]
                 ge[x].fitness += 0.1
+                if addition > 0:
+                    ge[x].fitness += addition
 
         for x, board in enumerate(boards):
             if board in rem:
@@ -348,7 +353,7 @@ def run(path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(eval_genomes, 300)
+    winner = p.run(eval_genomes, 500)
 
     print('\nBest genome:\n{!s}'.format(winner))
 
