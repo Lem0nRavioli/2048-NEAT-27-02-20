@@ -64,12 +64,6 @@ class Tile:
         self.value += 1
         self.img = TILES[self.value]
 
-    def collide(self):
-        pass
-
-    def fuse(self):
-        pass
-
     def draw(self, win):
         win.blit(self.img, self.pos)
 
@@ -114,7 +108,6 @@ class Board:
         if not self.board_full():
             Tile(self)
 
-    # position is correct but won't update yet
     # make it to dir = up or down or left or right
     # test argument is for checking if the board have any available moves without messing with it
     def make_move(self, dir, test=False):
@@ -231,7 +224,7 @@ class Board:
                                 self.boxes[y][x] = None
                             made_move = True
 
-        # need a fix, currently doesn't check if there is available moves or not
+        # apply the move saved earlier if the def is not used as a test
         if made_move and not test:
             self.add_tile()
         return made_move
@@ -366,8 +359,8 @@ if __name__ == "__main__":
     run(config_path)
 
 
-# remove board is bugged
-# when the genome lock itself in a position 2 turn in a row the board should be removed but it doesn't
+# have to find how to tweak the parameters and adjust the fitness function to train it better
+# currently train like shit
 
 
 
