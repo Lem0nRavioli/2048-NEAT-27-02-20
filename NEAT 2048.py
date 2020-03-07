@@ -15,6 +15,7 @@ SMALL_PAD = 2
 TILE_HW = 40
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
 WHITE_COLOR = (255, 255, 255)
+BLACK_COLOR = (0, 0, 0)
 
 TILE_2 = pygame.transform.scale(pygame.image.load(os.path.join("imgs", "2.png")), (TILE_HW, TILE_HW))
 TILE_4 = pygame.transform.scale(pygame.image.load(os.path.join("imgs", "4.png")), (TILE_HW, TILE_HW))
@@ -240,6 +241,8 @@ class Board:
 
 
 def draw_window(win, boards):
+    pygame.draw.rect(win, BLACK_COLOR, (0, 0, BIG_HW, BIG_HW))
+
     for board in boards:
         board.draw(win)
         for line_board in board.boxes:
@@ -251,7 +254,12 @@ def draw_window(win, boards):
 
 
 def eval_genomes(genomes, config):
-    # Main Loop
+    global big_board
+    big_board = [[None, None, None, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None],
+                 [None, None, None, None, None]]
     clock = pygame.time.Clock()
     win = pygame.display.set_mode((BIG_HW, BIG_HW))
     rem = []
@@ -274,11 +282,13 @@ def eval_genomes(genomes, config):
 
     run = True
     while run:
-        clock.tick(5)
+        #clock.tick(5)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                pygame.quit()
+                quit()
 
         for x, board in enumerate(boards):
             # generate a tuple representing the current board state with 0 to 13 numbers
@@ -329,7 +339,8 @@ def eval_genomes(genomes, config):
                 nets.pop(x)
                 ge.pop(x)
 
-        rem = []
+        if len(boards) < 1:
+            run = False
 
         draw_window(win, boards)
 
@@ -344,7 +355,7 @@ def run(path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(eval_genomes, 50)
+    winner = p.run(eval_genomes, 300)
 
     print('\nBest genome:\n{!s}'.format(winner))
 
@@ -392,3 +403,9 @@ boards = [test_board, test2_board, test3_board]'''
                     board.make_move("right")
                     if board.locked_board():
                         rem.append(board)'''
+'''        for board in rem:
+            i = boards.index(board)
+            ge[i].fitness -= 1
+            ge.pop(i)
+            nets.pop(i)
+            boards.pop(i)'''
