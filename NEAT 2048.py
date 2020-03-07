@@ -320,7 +320,7 @@ def eval_genomes(genomes, config):
             new_list_board = tuple(new_list_board)
 
             if board.locked_board() or new_list_board == list_board:
-                # could also change the fitness here
+                ge[x].fitness -= 5
                 rem.append(board)
             else:
                 addition = 0
@@ -330,9 +330,11 @@ def eval_genomes(genomes, config):
                 if addition > 0:
                     ge[x].fitness += addition
 
+            if ge[x].fitness >= 150:
+                pickle.dump(nets[0], open("best.pickle", "wb"))
+
         for x, board in enumerate(boards):
             if board in rem:
-                ge[x].fitness -= 1
                 boards.pop(x)
                 nets.pop(x)
                 ge.pop(x)
@@ -353,7 +355,7 @@ def run(path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(eval_genomes, 500)
+    winner = p.run(eval_genomes, 1000)
 
     print('\nBest genome:\n{!s}'.format(winner))
 
@@ -366,6 +368,7 @@ if __name__ == "__main__":
 
 # have to find how to tweak the parameters and adjust the fitness function to train it better
 # currently train like shit
+# also for some reasons the pop size do change around run 800+ to 26 from 25 (with 3 species)
 
 
 
